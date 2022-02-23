@@ -1,9 +1,11 @@
-// @dart=2.9
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:github_mobile_app/screens/home_screen.dart';
 import 'package:github_mobile_app/screens/signup_screen.dart';
+import 'package:github_mobile_app/utils/auth_handler.dart';
 import 'package:github_mobile_app/widgets/big_button.dart';
+import 'screens/home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,20 +23,21 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(),
+      home: StartScreen(),
       routes: {
         SignUpScreen.screenName: (context) => SignUpScreen(),
+        HomeScreen.screenName: (context) => HomeScreen(),
       },
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
+class StartScreen extends StatefulWidget {
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<StartScreen> createState() => _StartScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _StartScreenState extends State<StartScreen> {
   FirebaseAuth auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
@@ -54,17 +57,27 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
             BigButton(
-              title: 'SIGN IN WITH FACEBOOK',
+              title: 'Sign in with Google',
               textColor: Colors.white,
               colour: Colors.blue.shade800,
-              onPressed: () {
+              onPressed: () async {
                 print('Hello');
+                User? user = await AuthHandler.signInWithGoogle();
+                if (user != null) {
+                  Navigator.pushReplacementNamed(
+                      context, HomeScreen.screenName);
+                }
               },
+            ),
+            BigButton(
+              title: 'Tutorial Screens',
+              textColor: Colors.white,
+              colour: Colors.blue.shade800,
+              onPressed: () async {},
             ),
           ],
         ),
       ),
     );
-    // Here we take the value from the MyHomePage object that was created by
   }
 }
